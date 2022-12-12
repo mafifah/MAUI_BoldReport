@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+	<title>MauiBoldReports</title>
+	<base href="/" />
+	<link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
+	<link href="css/app.css" rel="stylesheet" />
+	<link href="MauiBoldReports.styles.css" rel="stylesheet" />
+
+	<!--CSS DX dan Radzen-->
+	<link href="_content/DevExpress.Blazor.Themes/bootstrap-external.bs5.min.css" rel="stylesheet" />
+	<link rel="stylesheet" href="_content/Radzen.Blazor/css/default-base.css">
+
+	<link href="https://cdn.boldreports.com/4.2.52/content/material/bold.reports.all.min.css" rel="stylesheet" />
+	<link href="https://cdn.boldreports.com/4.2.52/content/material/bold.reportdesigner.min.css" rel="stylesheet" />
+	<script src="https://cdn.boldreports.com/external/jquery-1.10.2.min.js" type="text/javascript"></script>
+
+	<!--Used to render the gauge item. Add this script only if your report contains the gauge report item. -->
+	<script src="https://cdn.boldreports.com/4.2.52/scripts/common/ej2-base.min.js"></script>
+	<script src="https://cdn.boldreports.com/4.2.52/scripts/common/ej2-data.min.js"></script>
+	<script src="https://cdn.boldreports.com/4.2.52/scripts/common/ej2-pdf-export.min.js"></script>
+	<script src="https://cdn.boldreports.com/4.2.52/scripts/common/ej2-svg-base.min.js"></script>
+	<script src="https://cdn.boldreports.com/4.2.52/scripts/data-visualization/ej2-lineargauge.min.js"></script>
+	<script src="https://cdn.boldreports.com/4.2.52/scripts/data-visualization/ej2-circulargauge.min.js"></script>
+
+	<!--Used to render the map item. Add this script only if your report contains the map report item.-->
+	<script src="https://cdn.boldreports.com/4.2.52/scripts/data-visualization/ej2-maps.min.js"></script>
+
+	<script src="https://cdn.boldreports.com/4.2.52/scripts/common/bold.reports.common.min.js"></script>
+	<script src="https://cdn.boldreports.com/4.2.52/scripts/common/bold.reports.widgets.min.js"></script>
+	<script src="https://cdn.boldreports.com/4.2.52/scripts/common/bold.report-designer-widgets.min.js"></script>
+
+	<!--Used to render the chart item. Add this script only if your report contains the chart report item.-->
+	<script src="https://cdn.boldreports.com/4.2.52/scripts/data-visualization/ej.chart.min.js"></script>
+
+	<!-- Report Designer component script-->
+	<script src="https://cdn.boldreports.com/4.2.52/scripts/bold.report-viewer.min.js"></script>
+	<script src="https://cdn.boldreports.com/4.2.52/scripts/bold.report-designer.min.js"></script>
+	<script src="boldreports-interop.js"></script>
+
+
+	<!--<script type="text/javascript">
+		window.BoldReports = {
+			RenderViewer: function (elementID, reportViewerOptions, callback) {
+				debugger
+
+				var completedCall = 0;
+				$("#" + elementID).boldReportViewer({
+					reportServiceUrl: reportViewerOptions.serviceURL,
+					reportPath: reportViewerOptions.reportName,
+					renderingComplete: function (reportViewerOptions) {
+						dotNetReference.invokeMethodAsync(callback, reportViewerOptions.reportName);
+						completedCall++;
+						if (completedCall == 1) {
+							window.DotNet.invokeMethodAsync('MauiBoldReports', 'PDFReport', "ABC");
+						}
+
+					}
+				});
+			},
+			RenderDesigner: function (elementID, reportDesignerOptions) {
+				$("#" + elementID).boldReportDesigner({
+					serviceUrl: reportDesignerOptions.serviceURL,
+					toolbarSettings: {
+						items: ej.ReportDesigner.ToolbarItems.All & ~ej.ReportDesigner.ToolbarItems.New & ~ej.ReportDesigner.ToolbarItems.Open & ~ej.ReportDesigner.ToolbarItems.Save
+					},
+					toolbarRendering: updateDesignerToolBar,
+					toolbarClick: overWriteToolbarClick,
+					reportSaved: setSaveIndex
+				});
+				designerInst = $('#' + reportControlId).data('boldReportDesigner');
+			},
+
+			updateDesignerToolBar: function (args) {
+				if (args && args.target && $(args.target).hasClass('e-rptdesigner-toolbarcontainer')) {
+					args.target.find('ul:first').append(getToolbarItem('NewCustom', getLocale('new'), 'e-rptdesigner-toolbar-new'), getToolbarItem('OpenCustom', getLocale('open'), 'e-rptdesigner-toolbar-open'));
+					appendSplitBtn(args.target.find('ul:first'), 'SaveCustom', getLocale('save'), 'e-rptdesigner-toolbar-save e-li-item', '3px 0px 0px 1px', reportControlId + '_saveConfigMenu');
+					$('#' + reportControlId + '_toolbar_li_View').before(getToolbarItem('Info', getLocale('about'), 'e-rptdesigner-toolbar-alertinfo'));
+				}
+			},
+
+			overWriteToolbarClick: function (args) {
+				if (designerInst) {
+					if (args.click === 'Save') {
+						args.cancel = true;
+						renderSaveMenu(args);
+					} else if (args.click === 'Open') {
+						args.cancel = true;
+						designerInst.openReportFromDevice();
+					} else if (args.click === 'New') {
+						args.cancel = true;
+						designerInst.newReport('Untitled');
+						callbackObj.newReport();
+					} else if (args.click === 'External') {
+						var target = $(args.target.target);
+						var litag = target.closest('.e-rptdesigner-toolbarli');
+
+						if (target.hasClass('e-rptdesigner-toolbarli')) {
+							target = target.find('span.e-li-item');
+						} else if (litag.length > 0) {
+							target = litag.find('span.e-li-item');
+						}
+
+						if (target.hasClass('e-rptdesigner-toolbar-alertinfo')) {
+							callbackObj.showAbout();
+						}
+					}
+				}
+			},
+			setSaveIndex: function () {
+				designerInst.getInstance('UndoManager').saveActionIndex();
+			}
+
+		}
+
+	</script>-->
+</head>
+
+<body>
+	<div class="status-bar-safe-area"></div>
+
+	<div id="app">Loading...</div>
+
+	<div id="blazor-error-ui">
+		An unhandled error has occurred.
+		<a href="" class="reload">Reload</a>
+		<a class="dismiss">🗙</a>
+	</div>
+	<script src="_framework/blazor.webassembly.js"></script>
+	<script src="_content/BrowserInterop/scripts.js"></script>
+	<script src="_framework/blazor.webview.js" autostart="false"></script>
+	<script src="_content/Radzen.Blazor/Radzen.Blazor.js"></script>
+
+</body>
+
+</html>

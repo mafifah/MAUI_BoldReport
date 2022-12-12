@@ -1,0 +1,164 @@
+﻿@page "/fetchdata"
+
+<DxCheckBox Checked="true"></DxCheckBox>
+
+
+@*<DxDateEdit Id="idDXDateEdit" @bind-Date="@SelectedDate"></DxDateEdit>
+*@
+
+<DxListBox Data="@Cities" @bind-Values="@Values"></DxListBox>
+
+
+@*<DxTextBox Text="sdsdsd"/>
+*@
+
+
+<DxGrid Data="@Cities"></DxGrid>
+
+@*<DxCalendar SelectedDate="DateTime.Today"></DxCalendar>
+*@
+<DxMemo Text="sdsdsd"></DxMemo>
+
+@*<DxSpinEdit Value="1"></DxSpinEdit>*@
+
+<DxButton Text="Submit"></DxButton>
+
+
+
+@*<DxFormLayout @ref="@base_fl" Id="base_fl">
+
+</DxFormLayout>*@
+
+<RadzenTemplateForm Data="@Cities">
+    @foreach (var item in Cities)
+    {
+        <div class="row">
+            <div class="col-md-4 align-items-center d-flex">
+                <RadzenLabel Text="@item" />
+            </div>
+            <div class="col-md-8">
+                <RadzenTextBox style="width: 100%;" Name="CardNr" />
+            </div>
+        </div>
+    }
+
+    <RadzenCheckBox Value="true"></RadzenCheckBox>
+
+    <RadzenDropDown TValue="string" Data="@Cities"></RadzenDropDown>
+
+    <RadzenDatePicker @bind-Value="@datevalue" DateFormat="d" Class="w-100" />
+
+    <RadzenListBox @bind-Value=@nama Data=@Cities Style="height:200px" Class="w-100" />
+    <RadzenTextBox style="width: 100%;" Name="CardNr" />
+
+    <RadzenCard>
+        <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">TextArea</RadzenText>
+        <RadzenTextArea Class="w-100" />
+    </RadzenCard>
+
+    <RadzenCard>
+        <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Default Numeric</RadzenText>
+        <RadzenNumeric TValue="int" Class="w-100" />
+    </RadzenCard>
+
+    <DxGrid Data="@Peoples">
+        <Columns>
+            <DxGridDataColumn FieldName="name" Caption="name" />
+        </Columns>
+
+    </DxGrid>
+    <DxTreeView AllowSelectNodes="true">
+        <Nodes>
+            <DxTreeViewNode Text="Metals">
+                <Nodes>
+                    <DxTreeViewNode Text="Alkali metals" />
+                    <DxTreeViewNode Text="Alkaline earth metals" />
+                    <DxTreeViewNode Text="Inner transition elements">
+                        <Nodes>
+                            <DxTreeViewNode Text="Lanthanides" />
+                            <DxTreeViewNode Text="Actinides" />
+                        </Nodes>
+                    </DxTreeViewNode>
+                    <DxTreeViewNode Text="Transition elements" />
+                    <DxTreeViewNode Text="Other metals" />
+                </Nodes>
+            </DxTreeViewNode>
+            <DxTreeViewNode Text="Metalloids" />
+            <DxTreeViewNode Text="Nonmetals">
+                <Nodes>
+                    <DxTreeViewNode Text="Halogens" />
+                    <DxTreeViewNode Text="Noble gases" />
+                    <DxTreeViewNode Text="Other nonmetals" />
+                </Nodes>
+            </DxTreeViewNode>
+        </Nodes>
+    </DxTreeView>
+    <RadzenTree Style="width: 100%; height: 300px">
+        <RadzenTreeItem Text="BMW">
+            <ChildContent>
+                <RadzenTreeItem Text="M3" />
+                <RadzenTreeItem Text="M5" />
+            </ChildContent>
+        </RadzenTreeItem>
+        <RadzenTreeItem Text="Audi">
+            <ChildContent>
+                <RadzenTreeItem Text="RS4" />
+                <RadzenTreeItem Text="RS6" />
+            </ChildContent>
+        </RadzenTreeItem>
+        <RadzenTreeItem Text="Mercedes">
+            <ChildContent>
+                <RadzenTreeItem Text="C63 AMG" />
+                <RadzenTreeItem Text="S63 AMG" />
+            </ChildContent>
+        </RadzenTreeItem>
+    </RadzenTree>
+    <DxCalendar @bind-SelectedDate="@SelectedDate" />
+    <DxDateEdit @bind-Date="@SelectedDate"></DxDateEdit>
+    <DxTextBox @bind-Text="@nama" />
+</RadzenTemplateForm>
+
+
+
+
+@code {
+    DateTime SelectedDate { get; set; } = DateTime.Now;
+    public class People
+    {
+        public string name { get; set; }
+    }
+    List<People> Peoples = new List<People>();
+    string nama { get; set; } = "ALFKI";
+    DateTime? datevalue = DateTime.Now;
+    IEnumerable<string> Cities = new List<string>() {
+    "London",
+    "Berlin",
+    "Paris",
+  };
+
+    IEnumerable<string> Values { get; set; }
+}
+@*<DxFormLayout @ref="@base_fl" Id="base_fl">
+    <DxFormLayoutItem Id="lciNamaLengkap" Caption="Nama Lengkap:" ColSpanMd="12">
+        <DxTextBox Id="txbNamaLengkap" />
+    </DxFormLayoutItem>
+    <DxFormLayoutItem Id="lciNamaPanggilan" Caption="Nama Panggilan:" ColSpanMd="12">
+        <DxTextBox Id="txbNamaPanggilan" />
+    </DxFormLayoutItem>
+    <DxFormLayoutItem Id="lciAlamat" Caption="Alamat:" ColSpanMd="12">
+        <DxTextBox Id="txbAlamat" />
+    </DxFormLayoutItem>
+</DxFormLayout>
+*@
+@*@code {
+    DxFormLayout? base_fl { get; set; }
+    private int currentCount = 0;
+
+    protected override void OnInitialized()
+    {
+        Peoples.Add(new People { name = "Test1" });
+        Peoples.Add(new People { name = "Test2" });
+        base.OnInitialized();
+        var h = base_fl?.ChildContent;
+    }
+}*@

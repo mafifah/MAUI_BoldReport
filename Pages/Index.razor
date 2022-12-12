@@ -1,0 +1,39 @@
+﻿@page "/"
+@inject IJSRuntime JSRuntime
+@inject IHttpClientFactory ClientFactory
+@using MauiBoldReports.Data;
+@using Microsoft.JSInterop
+@using Microsoft.AspNetCore.Components
+@implements IDisposable
+
+<div id="report-viewer" style="width: 100%;height: 800vh !important;" />
+
+@code {
+
+    public BoldReportViewerOptions viewerOptions = new BoldReportViewerOptions();
+
+    // You have to call this method based on your need. It can called while loading the page or after selection the report.
+    public async void RenderReport()
+    {
+        viewerOptions.ReportName = "rptJabatan";
+        viewerOptions.ServiceURL = "http://localhost:5007/api/ReportViewer";
+        //viewerOptions.ReportName = "~/Resources/docs/sales-order-detail.rdl";
+        //viewerOptions.ServiceURL = "https://demos.boldreports.com/services/api/ReportViewer";
+        var dotNetReference = DotNetObjectReference.Create(this);
+        await JSRuntime.InvokeVoidAsync("BoldReports.RenderViewer", dotNetReference, "report-viewer", viewerOptions, "PDFReport");
+
+
+        //await ConvertFileToUpperCase(@"F:\Download", "writer.pdf");
+    }
+    protected override void OnAfterRender(bool firstRender)
+    {
+        // If you want to load in intialization you can make use of this.
+        RenderReport();
+    }
+
+    void IDisposable.Dispose()
+    {
+        // Unsubscribe from the event when our component is disposed
+        JSRuntime.InvokeAsync<bool>("DisposeReportsObject").GetAwaiter();
+    }
+}

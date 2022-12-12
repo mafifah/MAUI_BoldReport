@@ -1,0 +1,37 @@
+﻿@page "/counter"
+@using MauiBoldReports.Data;
+@inject IJSRuntime JSRuntime
+
+<h1>Report Designer</h1>
+<DxButton Id="save-btn" Click="SaveReport">Save The Report</DxButton>
+<br />
+<br />
+<div id="designer" style="width: 100%;height: 70vh !important;"></div>
+
+@code {
+    private int currentCount = 0;
+
+    private void IncrementCount()
+    {
+        currentCount++;
+    }
+    BoldReportDesignerOptions designerOptions = new BoldReportDesignerOptions();
+
+    // Used to render the Bold Report Designer component in Blazor page.
+    public async void RenderReportDesigner()
+    {
+        designerOptions.ServiceURL = "https://demos.boldreports.com/services/api/ReportingAPI";
+        var dotNetReference = DotNetObjectReference.Create(this);
+        await JSRuntime.InvokeVoidAsync("BoldReports.RenderDesigner", dotNetReference, "designer", designerOptions);
+    }
+    // Initial rendering of Bold Report Designer
+    protected override void OnAfterRender(bool firstRender)
+    {
+        RenderReportDesigner();
+    }
+
+    public async void SaveReport()
+    {
+        await JSRuntime.InvokeAsync<object>("Save", "designer");
+    }
+}
